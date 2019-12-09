@@ -24,13 +24,16 @@ Queries used to determined the answer to the first question, of if Home-court Ad
 
 #### Caveats:
 * Games that are part of the [NBA Global Games](https://en.wikipedia.org/wiki/NBA_Global_Games) series have a value for `game_location` of 'N' to denote that it is neither a home, nor an away game for any team, so these games are **not** counted in the Win Ratio.
+* We suppress `is_copy` = `TRUE` games which isolates home games.
+* We remove losses (`game_result` != `'L'`) when determining Wins but include them in the total games played.
 
 ### **nba_elo_underdog.sql**
 Queries used to determine the answer to the second question, if there is a Benefit to being an Underdog in the playoffs.  We define this as the Win Ratio for games played where `is_playoffs` is TRUE **AND** games where the `elo_enter` < the `opp_elo_enter`.  These values represent the team's Elo difference in the contest.
 
 The first query [1] obtains a count of all playoff games, while query [2] utilizes the Underdog classifier to attribute textual values to the Elo difference.  Query [3] obtains the sub-totals of these classified games so that in query [4] we can utilize the Win Ratio metric on a total scale to determine the win ratios of classified playoff games for analysis.
 
-Underdog Classifier:
+#### Underdog Classifier:
+I used a `CASE` statement, so the textual values for the games could be utilized in SQL's `GROUP BY` functionality.
 ```sql
 CASE 
     WHEN elo_enter < opp_elo_enter THEN 'Underdog'
@@ -41,7 +44,7 @@ END
 
 #### Caveats:
 * Unlike the Home-court queries, we don't supress the Global games because Playoff games all take place in Franchise areans.
-
+* The `ELSE` condition yields the `'Equal'` value, but it was unlikely for two teams to have the _exact_ same Elo rating, so none existed to suppress.
 
 ## Reference Links
 ### 538 ELO Repo:
