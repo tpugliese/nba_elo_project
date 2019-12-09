@@ -3,16 +3,17 @@ CREATE TABLE nba_elo (
     game_order INT UNSIGNED
     , game_id VARCHAR(20)
     , lg_id VARCHAR(5)
-    , is_copy BOOLEAN
+    , is_copy BOOLEAN # kept naming in line with `is_playoffs`
     , year_id YEAR(4)
-    , date_game DATE
+    , date_game DATE 
     , season_game INT UNSIGNED
     , is_playoffs BOOLEAN
     , team_id VARCHAR(5)
     , franchise_id VARCHAR(30)
-    , points INT UNSIGNED
+    # renamed following fields to be more descriptive
+    , points INT UNSIGNED 
     , elo_enter DECIMAL(8,4)
-    , elo_leave DECIMAL(8,4)
+    , elo_leave DECIMAL(8,4) 
     , elo_win_equiv DECIMAL(8,6)
     , opp_team_id VARCHAR(5)
     , opp_franchise_id VARCHAR(30)
@@ -21,6 +22,7 @@ CREATE TABLE nba_elo (
     , opp_elo_leave DECIMAL(8,4)
     , game_location CHAR(1)
     , game_result CHAR(1)
+    # Wanted to retain precision
     , forecast DECIMAL(10,9)
     , notes VARCHAR(60)
 );
@@ -32,7 +34,7 @@ SET GLOBAL local_infile= true;
 LOAD DATA LOCAL INFILE '/Users/tylerpugliese/Desktop/nbaallelo.csv' 
 IGNORE INTO TABLE poc_work.nba_elo 
 FIELDS TERMINATED BY ',' 
-# Ignore First Header Row
+# Caveat #1
 IGNORE 1 LINES
 (
     game_order, game_id, lg_id, is_copy, year_id
